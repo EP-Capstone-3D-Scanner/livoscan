@@ -1,1 +1,4 @@
-.bash_history
+# ROS2 build artifacts
+build/
+install/
+log/

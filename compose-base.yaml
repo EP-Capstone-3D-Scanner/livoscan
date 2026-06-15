@@ -1,24 +1,20 @@
-name: livoscan
-
 services:
   base:
-    container_name: livoscan-container
     hostname: livoscan
     build:
       context: .
       dockerfile: ./Dockerfile
       args:
-        USERNAME: ${USER:-user}
+        ROS_DISTRO: humble
+        USERNAME: user
+        USER_UID: 1000
     network_mode: host
     ipc: host
     pid: host
     stdin_open: true
     tty: true
-    working_dir: /home/${USER:-user}
-    user: ${USER:-user}
 
+    working_dir: /home/user/workspace
+    user: user
     volumes:
-      - .:/home/${USER:-user}
-
-  dev:
-    extends: base
+      - .:/home/user/workspace
