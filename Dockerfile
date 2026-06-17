@@ -20,6 +20,10 @@ RUN chmod 0440 /etc/sudoers.d/${USERNAME}
 RUN apt-get update && apt-get install -y --no-install-recommends \
     # For Livox-SDK
     ros-${ROS_DISTRO}-pcl-ros \
+    # For Fast-LIVO2
+    ros-${ROS_DISTRO}-cv-bridge \
+    ros-${ROS_DISTRO}-image-transport \
+    ros-${ROS_DISTRO}-sophus \
     # For faster ROS middleware
     ros-${ROS_DISTRO}-rmw-cyclonedds-cpp \
     \
@@ -28,7 +32,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Clone files for installation
 RUN mkdir -p /home/install_files/source
 RUN mkdir -p /home/install_files/build
-COPY ./install_files /home/install_files/source
+COPY ./docker_build_files /home/install_files/source
 
 # Install Livox-SDK
 RUN set -ex; \

@@ -1,11 +1,15 @@
 [submodule "Livox-SDK"]
-	path = install_files/Livox-SDK
-	url = https://github.com/Livox-SDK/Livox-SDK.git
+	path = docker_build_files/Livox-SDK
+	url = git@github.com:Livox-SDK/Livox-SDK.git
 	branch = fix_ros2_humble
 [submodule "livox_ros2_driver_ext"]
 	path = src/livox_ros2_driver_ext
-	url = https://github.com/EP-Capstone-3D-Scanner/livox_ros2_driver_ext.git
+	url = git@github.com:EP-Capstone-3D-Scanner/livox_ros2_driver_ext.git
 [submodule "FAST-LIVO2-ROS2"]
 	path = src/FAST-LIVO2-ROS2
-	url = https://github.com/EP-Capstone-3D-Scanner/FAST-LIVO2-ROS2.git
+	url = git@github.com:EP-Capstone-3D-Scanner/FAST-LIVO2-ROS2.git
+	branch = ros2
+[submodule "rpg_vikit"]
+	path = src/rpg_vikit
+	url = git@github.com:integralrobotics/rpg_vikit.git
 	branch = ros2
