@@ -13,8 +13,24 @@ services:
     pid: host
     stdin_open: true
     tty: true
-
+    environment:
+      - DISPLAY=${DISPLAY}
+      - XDG_RUNTIME_DIR=/tmp/runtime-user
+      # OpenGL use GPU
+      - __NV_PRIME_RENDER_OFFLOAD=1
+      - __GLX_VENDOR_LIBRARY_NAME=nvidia
+      # Vulkan use GPU
+      - __VK_LAYER_NV_optimus=NVIDIA_only
+    devices:
+      - /dev/dri:/dev/dri
     working_dir: /home/user/workspace
     user: user
     volumes:
       - .:/home/user/workspace
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              capabilities: [gpu]
