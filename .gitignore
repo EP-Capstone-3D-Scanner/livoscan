@@ -4,3 +4,6 @@ install/
 log/
 
 tmp/
+
+# Local environment variables
+.env

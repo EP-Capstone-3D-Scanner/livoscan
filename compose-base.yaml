@@ -1,6 +1,8 @@
 services:
   base:
     hostname: livoscan
+    extra_hosts:
+      - "livoscan:127.0.0.1"
     build:
       context: .
       dockerfile: ./Dockerfile
@@ -8,26 +10,33 @@ services:
         ROS_DISTRO: humble
         USERNAME: user
         USER_UID: 1000
+    privileged: true
     network_mode: host
     ipc: host
     pid: host
     stdin_open: true
     tty: true
     environment:
-      - DISPLAY=${DISPLAY}
+      # - DISPLAY=${DISPLAY}
+      - DISPLAY=${RVIZ_DISPLAY:-:0}
       - XDG_RUNTIME_DIR=/tmp/runtime-user
       # OpenGL use GPU
       - __NV_PRIME_RENDER_OFFLOAD=1
       - __GLX_VENDOR_LIBRARY_NAME=nvidia
       # Vulkan use GPU
       - __VK_LAYER_NV_optimus=NVIDIA_only
-    devices:
-      - /dev/dri:/dev/dri
+    # devices:
+      # - /dev/dri:/dev/dri
+      # - /dev/v4l/by-id/usb-Technologies__Inc._ZED_2i_OV0001-video-index0:/dev/video0
+      # - /dev/v4l/by-id/usb-Technologies__Inc._ZED_2i_OV0001-video-index1:/dev/video1
+    group_add:
+      - video
+      - "983"
     working_dir: /home/user/workspace
     user: user
     volumes:
-      - .:/home/user/workspace
-      - /tmp/.X11-unix:/tmp/.X11-unix
+      - .:/home/user/workspace:rw
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
     deploy:
       resources:
         reservations:

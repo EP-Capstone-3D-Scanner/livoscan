@@ -1,0 +1,5 @@
+<library path="livoscan">
+  <class name="livoscan/MyCustomPanel" type="my_custom_rviz_panel::MyCustomPanel" base_class_type="rviz_common::Panel">
+    <description>A custom GUI panel for RViz2 with a fullscreen hack.</description>
+  </class>
+</library>

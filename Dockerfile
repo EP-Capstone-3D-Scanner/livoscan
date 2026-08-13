@@ -20,12 +20,17 @@ RUN chmod 0440 /etc/sudoers.d/${USERNAME}
 RUN apt-get update && apt-get install -y --no-install-recommends \
     # For Livox-SDK
     ros-${ROS_DISTRO}-pcl-ros \
+    # For V4l2 Camera
+    ros-${ROS_DISTRO}-v4l2-camera \
     # For Fast-LIVO2
     ros-${ROS_DISTRO}-cv-bridge \
     ros-${ROS_DISTRO}-image-transport \
     ros-${ROS_DISTRO}-sophus \
     # For faster ROS middleware
     ros-${ROS_DISTRO}-rmw-cyclonedds-cpp \
+    # For livoscan
+    ros-${ROS_DISTRO}-rviz2 \
+    ros-${ROS_DISTRO}-rqt* \
     \
     && rm -rf /var/lib/apt/lists/*
 
@@ -41,7 +46,12 @@ RUN set -ex; \
     cd Livox-SDK; \
     cmake /home/install_files/source/Livox-SDK -DCMAKE_POSITION_INDEPENDENT_CODE=ON; \
     make -j$(nproc); \
-    sudo make install
+    make install
+
+# Install Zed-SDK
+# RUN set -ex; \
+#     cd /home/install_files/source/Zed-SDK; \
+#     ./ZED_SDK_Ubuntu22_cuda13.0_tensorrt10.13_v5.4.0.zstd.run -- silent skip_cuda skip_od_module skip_python skip_hub
 
 ENV RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
 
