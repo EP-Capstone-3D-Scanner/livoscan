@@ -21,7 +21,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     # For Livox-SDK
     ros-${ROS_DISTRO}-pcl-ros \
     # For V4l2 Camera
-    ros-${ROS_DISTRO}-v4l2-camera \
+    # ros-${ROS_DISTRO}-v4l2-camera \
+    # For usb_cam
+    # ros-${ROS_DISTRO}-usb-cam \
     # For Fast-LIVO2
     ros-${ROS_DISTRO}-cv-bridge \
     ros-${ROS_DISTRO}-image-transport \

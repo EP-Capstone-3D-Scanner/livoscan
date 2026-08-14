@@ -5,70 +5,124 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
-# find dependencies
-find_package(ament_cmake REQUIRED)
+# ------------------------------------------------------------------------------
+# Dependencies
+# ------------------------------------------------------------------------------
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rviz_common REQUIRED)
 find_package(pluginlib REQUIRED)
 find_package(Qt5 REQUIRED COMPONENTS Core Gui Widgets)
-# uncomment the following section in order to fill in
-# further dependencies manually.
-# find_package(<dependency> REQUIRED)
+find_package(sensor_msgs REQUIRED)
+find_package(cv_bridge REQUIRED)
+find_package(OpenCV REQUIRED)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 
+# ------------------------------------------------------------------------------
+# Testing
+# ------------------------------------------------------------------------------
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
-  # the following line skips the linter which checks for copyrights
-  # comment the line when a copyright and license is added to all source files
   set(ament_cmake_copyright_FOUND TRUE)
-  # the following line skips cpplint (only works in a git repo)
-  # comment the line when this package is in a git repo and when
-  # a copyright and license is added to all source files
   set(ament_cmake_cpplint_FOUND TRUE)
   ament_lint_auto_find_test_dependencies()
 endif()
 
-# Add include directories
-include_directories(include)
-
-# Create the shared library for the plugin
+# ------------------------------------------------------------------------------
+# 1. RViz2 Plugin Shared Library Target
+# ------------------------------------------------------------------------------
 add_library(${PROJECT_NAME} SHARED
   src/rviz2/panel.cpp
   include/rviz2/panel.hpp
 )
 
-target_link_libraries(${PROJECT_NAME} Qt5::Widgets)
-ament_target_dependencies(${PROJECT_NAME} rclcpp rviz_common pluginlib)
+target_include_directories(${PROJECT_NAME} PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
 
-# Export the plugin.xml file
-pluginlib_export_plugin_description_file(rviz_common include/rviz2/plugins.xml)
+# Plain signature (no PUBLIC keyword) to remain compatible with ament_target_dependencies
+target_link_libraries(${PROJECT_NAME}
+  Qt5::Widgets
+)
 
+ament_target_dependencies(${PROJECT_NAME}
+  rclcpp
+  rviz_common
+  pluginlib
+  sensor_msgs
+  cv_bridge
+)
+
+# ------------------------------------------------------------------------------
+# 2. UVC Camera Driver Executable Target
+# ------------------------------------------------------------------------------
+add_executable(uvc_camera_driver_node 
+  src/uvc_camera_driver/uvc_camera_driver_node.cpp
+)
+
+target_include_directories(uvc_camera_driver_node PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  ${OpenCV_INCLUDE_DIRS}
+)
+
+# Plain signature (no PRIVATE keyword) to remain compatible with ament_target_dependencies
+target_link_libraries(uvc_camera_driver_node
+  ${OpenCV_LIBRARIES}
+)
+
+ament_target_dependencies(uvc_camera_driver_node
+  rclcpp
+  sensor_msgs
+  cv_bridge
+)
+
+# ------------------------------------------------------------------------------
+# Pluginlib & Exports
+# ------------------------------------------------------------------------------
+# Export the plugin.xml file for RViz2
+pluginlib_export_plugin_description_file(rviz_common plugins.xml)
+
+# ------------------------------------------------------------------------------
+# Installation Rules
+# ------------------------------------------------------------------------------
+# Install shared library
 install(TARGETS ${PROJECT_NAME}
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin
 )
 
-install(DIRECTORY
-  launch
+# Install executable (must go into lib/${PROJECT_NAME} for ROS 2)
+install(TARGETS uvc_camera_driver_node
+  DESTINATION lib/${PROJECT_NAME}
+)
+
+# Install directories & config files
+install(DIRECTORY launch
   DESTINATION share/${PROJECT_NAME}/
 )
 
 install(DIRECTORY include/
   DESTINATION include
 )
-install(FILES include/rviz2/plugins.xml
+
+install(FILES plugins.xml
   DESTINATION share/${PROJECT_NAME}
 )
 
-install(FILES include/rviz2/plugins.xml
-  DESTINATION share/${PROJECT_NAME}
-)
+if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/rviz2")
+  install(DIRECTORY rviz2
+    DESTINATION share/${PROJECT_NAME}
+  )
+endif()
 
-ament_export_dependencies(rclcpp rviz_common pluginlib)
+# ------------------------------------------------------------------------------
+# Package Export
+# ------------------------------------------------------------------------------
+ament_export_dependencies(rclcpp rviz_common pluginlib sensor_msgs cv_bridge)
 ament_export_include_directories(include)
 ament_export_libraries(${PROJECT_NAME})
 

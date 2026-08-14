@@ -17,13 +17,15 @@ public:
   ~MyCustomPanel() override;
 
 protected:
-    void showEvent(QShowEvent* event) override;
+  void showEvent(QShowEvent* event) override;
+  bool eventFilter(QObject* obj, QEvent* event) override;
 
 private Q_SLOTS:
   void onFullscreenToggle();
 
 private:
   QPushButton* fullscreen_button_;
+  bool is_first_show_{true};
 };
 
 }  // namespace my_custom_rviz_panel
