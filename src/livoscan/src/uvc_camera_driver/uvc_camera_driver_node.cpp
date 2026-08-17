@@ -10,7 +10,7 @@ public:
     UvcCameraDriverNode() : Node("uvc_camera_driver_node")
     {
         // Parameter for the camera device
-        this->declare_parameter<std::string>("video_device", "/dev/video0");
+        this->declare_parameter<std::string>("video_device", "/dev/video2");
         std::string video_device = this->get_parameter("video_device").as_string();
 
         // 1. Open the raw UVC stream
@@ -44,7 +44,7 @@ public:
 
         // 5. Start the capture loop
         timer_ = this->create_wall_timer(
-            std::chrono::milliseconds(33), // ~30 fps
+            std::chrono::milliseconds(10), // ~30 fps
             std::bind(&UvcCameraDriverNode::timer_callback, this));
             
         RCLCPP_INFO(this->get_logger(), "ZED UVC Node started, publishing left image.");

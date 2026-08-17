@@ -105,6 +105,10 @@ install(DIRECTORY launch
   DESTINATION share/${PROJECT_NAME}/
 )
 
+install(DIRECTORY usb_cam
+  DESTINATION share/${PROJECT_NAME}/
+)
+
 install(DIRECTORY include/
   DESTINATION include
 )
