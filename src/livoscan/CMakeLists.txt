@@ -17,6 +17,9 @@ find_package(sensor_msgs REQUIRED)
 find_package(cv_bridge REQUIRED)
 find_package(OpenCV REQUIRED)
 
+find_package(rclcpp_components REQUIRED)
+find_package(livox_interfaces_ext REQUIRED)
+
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 
@@ -59,7 +62,7 @@ ament_target_dependencies(${PROJECT_NAME}
 # ------------------------------------------------------------------------------
 # 2. UVC Camera Driver Executable Target
 # ------------------------------------------------------------------------------
-add_executable(uvc_camera_driver_node 
+add_executable(uvc_camera_driver_node
   src/uvc_camera_driver/uvc_camera_driver_node.cpp
 )
 
@@ -77,6 +80,32 @@ ament_target_dependencies(uvc_camera_driver_node
   rclcpp
   sensor_msgs
   cv_bridge
+)
+
+#
+# My thing
+#
+add_executable(livox_interface_convert src/livox_interface_convert/livox_interface_convert_node.cpp)
+ament_target_dependencies(livox_interface_convert
+  rclcpp
+  sensor_msgs
+  livox_interfaces_ext
+)
+
+add_library(camera_time_offset_component SHARED src/camera_time_offset/camera_time_offset_node.cpp)
+ament_target_dependencies(camera_time_offset_component
+  rclcpp
+  rclcpp_components
+  sensor_msgs
+)
+rclcpp_components_register_nodes(
+  camera_time_offset_component
+  "CameraTimeOffsetNode"
+)
+install(TARGETS camera_time_offset_component
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
 )
 
 # ------------------------------------------------------------------------------
@@ -97,6 +126,10 @@ install(TARGETS ${PROJECT_NAME}
 
 # Install executable (must go into lib/${PROJECT_NAME} for ROS 2)
 install(TARGETS uvc_camera_driver_node
+  DESTINATION lib/${PROJECT_NAME}
+)
+
+install(TARGETS livox_interface_convert
   DESTINATION lib/${PROJECT_NAME}
 )
 
@@ -126,7 +159,7 @@ endif()
 # ------------------------------------------------------------------------------
 # Package Export
 # ------------------------------------------------------------------------------
-ament_export_dependencies(rclcpp rviz_common pluginlib sensor_msgs cv_bridge)
+ament_export_dependencies(rclcpp rviz_common pluginlib sensor_msgs cv_bridge rclcpp_components)
 ament_export_include_directories(include)
 ament_export_libraries(${PROJECT_NAME})
 

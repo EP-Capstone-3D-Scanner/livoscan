@@ -1,9 +1,9 @@
 /**:
     ros__parameters:
-      video_device: "/dev/video2"
+      video_device: "/dev/video0"
       framerate: 30.0
       io_method: "mmap"
-      frame_id: "livoscan_camera"
+      frame_id: "livoscan_camera_frame"
       pixel_format: "yuyv2rgb"
       av_device_format: "YUV422P"
       image_width: 2560

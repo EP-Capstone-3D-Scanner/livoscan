@@ -3,6 +3,7 @@ from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch_ros.actions import ComposableNodeContainer
 from launch_ros.descriptions import ComposableNode
+from launch_ros.actions import Node
 
 def generate_launch_description():
 
@@ -10,6 +11,18 @@ def generate_launch_description():
         get_package_share_directory('livoscan'),
         'usb_cam',
         'params.yaml'
+    )
+
+    camera_tf_node = Node(
+        package='tf2_ros',
+        executable='static_transform_publisher',
+        name='camera_to_lidar_tf',
+        arguments=[
+            '0.05', '0.0', '0.10',  # Translation (x, y, z) in meters
+            '0.0', '0.0', '0.0',    # Rotation (yaw, pitch, roll) in radians
+            'livoscan_lidar_frame',          # Parent frame ID (Your Lidar)
+            'livoscan_camera_frame'  # Child frame ID (Your Camera)
+        ]
     )
 
     usb_cam_node = ComposableNode(
@@ -40,7 +53,7 @@ def generate_launch_description():
             ('in/image_raw', '/zed/image_raw'),
             ('in/camera_info', '/zed/camera_info'),
             ('out/image_raw', '/camera/left/image_raw'),
-            ('out/camera_info', '/camera/left/camera_info_cropped')
+            ('out/camera_info', '/camera/left/camera_info')
         ]
     )
 
@@ -51,8 +64,21 @@ def generate_launch_description():
         name='rectify_node',
         remappings=[
             ('image', '/camera/left/image_raw'),
-            ('camera_info', '/camera/left/camera_info_cropped'),
+            ('camera_info', '/camera/left/camera_info'),
             ('image_rect', '/camera/left/image_rect')
+        ],
+        extra_arguments=[{'use_intra_process_comms': True}]
+    )
+
+    time_offset_node = ComposableNode(
+        package='livoscan',
+        plugin='CameraTimeOffsetNode',
+        name='time_offset_node',
+        remappings=[
+            ('image_in', '/camera/left/image_rect'),
+            ('camera_info_in', '/camera/left/camera_info'),
+            ('image_out', '/camera/out/image'),
+            ('camera_info_out', '/camera/out/camera_info')
         ],
         extra_arguments=[{'use_intra_process_comms': True}]
     )
@@ -66,9 +92,10 @@ def generate_launch_description():
         composable_node_descriptions=[
             usb_cam_node,
             crop_node,
-            rectify_node
+            rectify_node,
+            time_offset_node
         ],
         output='screen'
     )
 
-    return LaunchDescription([container])
+    return LaunchDescription([container, camera_tf_node])

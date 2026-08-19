@@ -16,4 +16,13 @@ My description
 
 ### Installation
 
-git pull
+```
+git clone --recurse-submodules https://github.com/EP-Capstone-3D-Scanner/livoscan.git
+```
+
+or if the repository is already cloned but the submodules were not cloned, use:
+
+```
+cd livoscan
+git submodule update --init --recursive
+```
