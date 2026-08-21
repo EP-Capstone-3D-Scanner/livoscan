@@ -7,7 +7,7 @@ class CameraTimeOffsetNode : public rclcpp::Node
   public:
     CameraTimeOffsetNode(const rclcpp::NodeOptions & options) : Node("camera_time_offset_node", options)
     {
-      this->declare_parameter<double>("offset_sec", 0.0);
+      this->declare_parameter<double>("offset_sec", 5.0);
 
       img_pub_ = this->create_publisher<sensor_msgs::msg::Image>("image_out", 10);
       img_sub_ = this->create_subscription<sensor_msgs::msg::Image>(

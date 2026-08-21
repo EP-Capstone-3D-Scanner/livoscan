@@ -142,6 +142,9 @@ install(DIRECTORY usb_cam
   DESTINATION share/${PROJECT_NAME}/
 )
 
+install(DIRECTORY livox_ros2_driver_ext
+  DESTINATION share/${PROJECT_NAME}/
+)
 install(DIRECTORY include/
   DESTINATION include
 )

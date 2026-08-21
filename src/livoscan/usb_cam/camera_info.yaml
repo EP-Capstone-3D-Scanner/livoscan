@@ -1,16 +1,16 @@
 image_width: 1280
 image_height: 720
-camera_name: zed2i
+camera_name: right_camera
 camera_matrix:
   rows: 3
   cols: 3
-  # Original K matrix: Keeps the raw sensor's physical center
-  data: [531.66, 0.0, 648.83, 0.0, 531.67, 378.814, 0.0, 0.0, 1.0]
+  # Original K matrix: Keeps the raw sensor's physical center (cx=650, cy=364.5535)
+  data: [531.535, 0.0, 650.0, 0.0, 531.43, 364.5535, 0.0, 0.0, 1.0]
 distortion_model: plumb_bob
 distortion_coefficients:
   rows: 1
   cols: 5
-  data: [-0.0712496, 0.0551279, -0.000250596, 0.000467508, -0.0227127]
+  data: [-0.0596335, 0.0344855, 0.000147432, 0.0000335602, -0.0132504]
 rectification_matrix:
   rows: 3
   cols: 3
@@ -19,5 +19,5 @@ rectification_matrix:
 projection_matrix:
   rows: 3
   cols: 4
-  # New P matrix: cx = (1280 - 648.83) = 631.17, cy = (720 - 378.814) = 341.186
-  data: [531.66, 0.0, 631.17, 0.0, 0.0, 531.67, 341.186, 0.0, 0.0, 0.0, 1.0, 0.0]
+  # New P matrix: cx = (1280 - 650) = 630.0, cy = (720 - 364.5535) = 355.4465
+  data: [531.535, 0.0, 630.0, 0.0, 0.0, 531.43, 355.4465, 0.0, 0.0, 0.0, 1.0, 0.0]

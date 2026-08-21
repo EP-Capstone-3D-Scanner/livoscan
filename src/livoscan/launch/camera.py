@@ -18,8 +18,8 @@ def generate_launch_description():
         executable='static_transform_publisher',
         name='camera_to_lidar_tf',
         arguments=[
-            '0.05', '0.0', '0.10',  # Translation (x, y, z) in meters
-            '0.0', '0.0', '0.0',    # Rotation (yaw, pitch, roll) in radians
+            '-0.02935', '0.06327', '-0.04427',  # Translation (x, y, z) in meters
+            '-0.49711', '0.50129', '-0.49601', '0.50552',    # Rotation in quaternions
             'livoscan_lidar_frame',          # Parent frame ID (Your Lidar)
             'livoscan_camera_frame'  # Child frame ID (Your Camera)
         ]
@@ -32,8 +32,8 @@ def generate_launch_description():
         parameters=[camera_config_file_path],
         extra_arguments=[{'use_intra_process_comms': True}],
         remappings=[
-            ('image_raw', '/zed/image_raw'),
-            ('camera_info', '/zed/camera_info')
+            ('image_raw', '/camera/in/image_raw'),
+            ('camera_info', '/camera/rect/camera_info')
         ]
     )
 
@@ -43,17 +43,17 @@ def generate_launch_description():
         plugin='image_proc::CropDecimateNode',
         name='crop_decimate_node',
         parameters=[{
-            'x_offset': 0,      # 0 for left eye, 1280 for right eye
-            'y_offset': 0,
+            'offset_x': 1280,      # 0 for left eye, 1280 for right eye
+            'offset_y': 0,
             'width': 1280,
             'height': 720,
         }],
         extra_arguments=[{'use_intra_process_comms': True}],
         remappings=[
-            ('in/image_raw', '/zed/image_raw'),
-            ('in/camera_info', '/zed/camera_info'),
-            ('out/image_raw', '/camera/left/image_raw'),
-            ('out/camera_info', '/camera/left/camera_info')
+            ('in/image_raw', '/camera/in/image_raw'),
+            ('in/camera_info', '/camera/rect/camera_info'),
+            ('out/image_raw', '/camera/crop/image_raw'),
+            ('out/camera_info', '/camera/crop/camera_info')
         ]
     )
 
@@ -63,9 +63,9 @@ def generate_launch_description():
         plugin='image_proc::RectifyNode',
         name='rectify_node',
         remappings=[
-            ('image', '/camera/left/image_raw'),
-            ('camera_info', '/camera/left/camera_info'),
-            ('image_rect', '/camera/left/image_rect')
+            ('image', '/camera/crop/image_raw'),
+            ('camera_info', '/camera/rect/camera_info'),
+            ('image_rect', '/camera/rect/image_raw')
         ],
         extra_arguments=[{'use_intra_process_comms': True}]
     )
@@ -75,8 +75,8 @@ def generate_launch_description():
         plugin='CameraTimeOffsetNode',
         name='time_offset_node',
         remappings=[
-            ('image_in', '/camera/left/image_rect'),
-            ('camera_info_in', '/camera/left/camera_info'),
+            ('image_in', '/camera/rect/image_raw'),
+            ('camera_info_in', '/camera/rect/camera_info'),
             ('image_out', '/camera/out/image'),
             ('camera_info_out', '/camera/out/camera_info')
         ],
