@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CycloneDDS xmlns="https://cdds.io/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://cdds.io/config https://raw.githubusercontent.com/eclipse-cyclonedds/cyclonedds/master/etc/cyclonedds.xsd">
+    <Domain id="any">
+        <General>
+            <!-- Allows larger fragments over the network -->
+            <MaxMessageSize>65500B</MaxMessageSize>
+        </General>
+        <Internal>
+            <!-- Forces Cyclone to use the large OS buffers you just set -->
+            <SocketReceiveBufferSize min="10MB"/>
+            <Watermarks>
+                <!-- Prevents Cyclone from throttling too early when queues fill -->
+                <WhcHigh>10MB</WhcHigh>
+            </Watermarks>
+        </Internal>
+    </Domain>
+</CycloneDDS>

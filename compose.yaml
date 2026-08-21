@@ -7,6 +7,9 @@ services:
       service: base
     container_name: livoscan-dev
 
+    command:
+      - bash
+
   prod:
     extends:
       file: compose-base.yaml

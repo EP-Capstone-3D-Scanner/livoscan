@@ -16,6 +16,9 @@ services:
     pid: host
     stdin_open: true
     tty: true
+
+    entrypoint: ["./entrypoint.sh"]    
+
     environment:
       # - DISPLAY=${DISPLAY}
       - DISPLAY=${RVIZ_DISPLAY:-:0}
@@ -29,6 +32,7 @@ services:
       # - /dev/dri:/dev/dri
       # - /dev/v4l/by-id/usb-Technologies__Inc._ZED_2i_OV0001-video-index0:/dev/video0
       # - /dev/v4l/by-id/usb-Technologies__Inc._ZED_2i_OV0001-video-index1:/dev/video1
+      - CYCLONEDDS_URI=file:///home/user/workspace/cyclonedds.xml
     group_add:
       - video
       - "983"

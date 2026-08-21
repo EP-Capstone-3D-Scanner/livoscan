@@ -25,7 +25,7 @@
 
     time_offset:
       imu_time_offset: 0.0
-      img_time_offset: 0.05
+      img_time_offset: 0.5
       exposure_time_init: 0.0
 
     preprocess:
@@ -37,14 +37,14 @@
 
     vio:
       max_iterations: 5
-      outlier_threshold: 80 # 78 100 156 #100 200 500 700 infinite
+      outlier_threshold: 80 # 78 100 156 100 200 500 700 infinite
       img_point_cov: 100 # 100 1000
       patch_size: 8
       patch_pyrimid_level: 4
       normal_en: true
       raycast_en: false
       inverse_composition_en: false
-      exposure_estimate_en: false
+      exposure_estimate_en: true
       inv_expo_cov: 0.1
 
     imu:
@@ -78,7 +78,7 @@
       dense_map_en: true
       pub_effect_point_en: false
       pub_plane_en: false
-      pub_scan_num: 10
+      pub_scan_num: 1
       blind_rgb_points: 0.0
 
     evo:
