@@ -1,27 +1,50 @@
+FROM nvcr.io/nvidia/l4t-jetpack:r36.4.0
+
+ARG DEBIAN_FRONTEND=noninteractive
+
 ARG ROS_DISTRO=humble
 
-FROM ros:${ROS_DISTRO}-ros-base
+# ROS2 installation
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    software-properties-common \
+    curl \
+    && add-apt-repository -y universe \
+    && export ROS_APT_SOURCE_VERSION=$(curl -s https://api.github.com/repos/ros-infrastructure/ros-apt-source/releases/latest | grep -F "tag_name" | awk -F'"' '{print $4}') \
+    && curl -L -o /tmp/ros2-apt-source.deb "https://github.com/ros-infrastructure/ros-apt-source/releases/download/${ROS_APT_SOURCE_VERSION}/ros2-apt-source_${ROS_APT_SOURCE_VERSION}.$(. /etc/os-release && echo ${UBUNTU_CODENAME:-${VERSION_CODENAME}})_all.deb" \
+    && dpkg -i /tmp/ros2-apt-source.deb \
+    && rm -f /tmp/ros2-apt-source.deb \
+    && rm -rf /var/lib/apt/lists/*
 
-ARG USERNAME=ros2user
-ARG USER_UID=1000
-ARG USER_GID=${USER_UID}
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ros-${ROS_DISTRO}-desktop \
+    && rm -rf /var/lib/apt/lists/*
 
-# Create the user
-RUN groupadd --gid ${USER_GID} ${USERNAME}
-RUN useradd --uid ${USER_UID} --gid ${USER_GID} -m ${USERNAME}
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ros-dev-tools \
+    build-essential \
+    libjemalloc2 \
+    && rm -rf /var/lib/apt/lists/*
 
-# Add sudo support for user
-RUN apt-get -y update
-RUN apt-get install -y sudo
-RUN echo ${USERNAME} ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/${USERNAME}
-RUN chmod 0440 /etc/sudoers.d/${USERNAME}
+ENV LD_PRELOAD=/usr/lib/aarch64-linux-gnu/libjemalloc.so.2
+
+# ZED SDK installation
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    wget \
+    zstd \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN wget -q -O ZED_SDK_Linux.run "https://download.stereolabs.com/zedsdk/5.4/l4t36.4/jetsons" \
+    && chmod +x ZED_SDK_Linux.run \
+    && ./ZED_SDK_Linux.run silent skip_cuda skip_od_module skip_python skip_hub \
+    && rm ZED_SDK_Linux.run
+
 
 # Install apt-get packages that are dependencies for install files
 RUN apt-get update && apt-get install -y --no-install-recommends \
     # For Livox-SDK
     ros-${ROS_DISTRO}-pcl-ros \
     \
-    && echo
+    && rm -rf /var/lib/apt/lists/*
 
 # Clone files for installation
 RUN mkdir -p /home/install_files/source
@@ -61,9 +84,25 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     \
     && rm -rf /var/lib/apt/lists/*
 
-ENV RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+# User setup
+# ARG USERNAME=ros2user
+# ARG USER_UID=1000
+# ARG USER_GID=${USER_UID}
 
-USER ${USERNAME}
+# # Create the user
+# RUN groupadd --gid ${USER_GID} ${USERNAME}
+# RUN useradd --uid ${USER_UID} --gid ${USER_GID} -m ${USERNAME}
+
+# # Add sudo support for user
+# RUN apt-get update && apt-get install -y --no-install-recommends \
+#     sudo \
+#     && rm -rf /var/lib/apt/lists/*
+
+# RUN echo ${USERNAME} ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/${USERNAME}
+# RUN chmod 0440 /etc/sudoers.d/${USERNAME}
+
+# USER ${USERNAME}
 RUN echo "source /opt/ros/${ROS_DISTRO}/setup.bash" >> ~/.bashrc
 RUN echo "source /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash" >> ~/.bashrc
+ENV RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
 ENV SHELL /bin/bash

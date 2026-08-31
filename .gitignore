@@ -7,3 +7,6 @@ tmp/
 
 # Local environment variables
 .env
+
+# QEMU core dumps
+*.core
