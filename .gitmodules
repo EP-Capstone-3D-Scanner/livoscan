@@ -13,3 +13,6 @@
 	path = src/rpg_vikit
 	url = https://github.com/EP-Capstone-3D-Scanner/rpg_vikit.git
 	branch = ros2
+[submodule "zed-ros2-wrapper"]
+	path = src/zed-ros2-wrapper
+	url = https://github.com/stereolabs/zed-ros2-wrapper.git
