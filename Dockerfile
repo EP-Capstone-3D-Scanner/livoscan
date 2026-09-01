@@ -38,6 +38,21 @@ RUN wget -q -O ZED_SDK_Linux.run "https://download.stereolabs.com/zedsdk/5.4/l4t
     && ./ZED_SDK_Linux.run silent skip_cuda skip_od_module skip_python skip_hub \
     && rm ZED_SDK_Linux.run
 
+# Install package dependencies using rosdep
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3-rosdep \
+    && rm -rf /var/lib/apt/lists/* \
+    && rosdep init || true \
+    && rosdep update
+
+RUN mkdir -p /tmp/dummy_ws/src \
+    && cd /tmp/dummy_ws/src \
+    && git clone --recursive https://github.com/stereolabs/zed-ros2-wrapper.git \
+    && cd /tmp/dummy_ws \
+    && apt-get update \
+    && rosdep install --from-paths src --ignore-src -r -y --rosdistro ${ROS_DISTRO} \
+    && rm -rf /tmp/dummy_ws \
+    && rm -rf /var/lib/apt/lists/*
 
 # Install apt-get packages that are dependencies for install files
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -60,10 +75,6 @@ RUN set -ex; \
     make -j$(nproc); \
     make install
 
-# Install Zed-SDK
-# RUN set -ex; \
-#     cd /home/install_files/source/Zed-SDK; \
-#     ./ZED_SDK_Ubuntu22_cuda13.0_tensorrt10.13_v5.4.0.zstd.run -- silent skip_cuda skip_od_module skip_python skip_hub
 
 # Install apt-get packages
 RUN apt-get update && apt-get install -y --no-install-recommends \
