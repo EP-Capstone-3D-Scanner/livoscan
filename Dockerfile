@@ -92,6 +92,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     # For livoscan
     ros-${ROS_DISTRO}-rviz2 \
     ros-${ROS_DISTRO}-rqt* \
+    # For visualization using Foxglove
+    ros-${ROS_DISTRO}-foxglove-bridge \
     \
     && rm -rf /var/lib/apt/lists/*
 
