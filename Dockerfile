@@ -16,7 +16,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    ros-${ROS_DISTRO}-desktop \
+    ros-${ROS_DISTRO}-ros-base \
     && rm -rf /var/lib/apt/lists/*
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -24,8 +24,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     libjemalloc2 \
     && rm -rf /var/lib/apt/lists/*
-
-ENV LD_PRELOAD=/usr/lib/aarch64-linux-gnu/libjemalloc.so.2
 
 # ZED SDK installation
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -78,13 +76,11 @@ RUN set -ex; \
 
 # Install apt-get packages
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    # For V4l2 Camera
-    # ros-${ROS_DISTRO}-v4l2-camera \
     # For usb_cam
     ros-${ROS_DISTRO}-usb-cam \
-    ros-${ROS_DISTRO}-image-pipeline \
+    # ros-${ROS_DISTRO}-image-pipeline \
     # For Fast-LIVO2
-    ros-${ROS_DISTRO}-cv-bridge \
+    # ros-${ROS_DISTRO}-cv-bridge \
     ros-${ROS_DISTRO}-image-transport \
     ros-${ROS_DISTRO}-sophus \
     # For faster ROS middleware
@@ -97,24 +93,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     \
     && rm -rf /var/lib/apt/lists/*
 
-# User setup
-# ARG USERNAME=ros2user
-# ARG USER_UID=1000
-# ARG USER_GID=${USER_UID}
-
-# # Create the user
-# RUN groupadd --gid ${USER_GID} ${USERNAME}
-# RUN useradd --uid ${USER_UID} --gid ${USER_GID} -m ${USERNAME}
-
-# # Add sudo support for user
-# RUN apt-get update && apt-get install -y --no-install-recommends \
-#     sudo \
-#     && rm -rf /var/lib/apt/lists/*
-
-# RUN echo ${USERNAME} ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/${USERNAME}
-# RUN chmod 0440 /etc/sudoers.d/${USERNAME}
-
-# USER ${USERNAME}
 RUN echo "source /opt/ros/${ROS_DISTRO}/setup.bash" >> ~/.bashrc
 RUN echo "source /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash" >> ~/.bashrc
 ENV RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
