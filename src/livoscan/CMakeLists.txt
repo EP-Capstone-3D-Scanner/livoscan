@@ -14,8 +14,8 @@ find_package(rviz_common REQUIRED)
 find_package(pluginlib REQUIRED)
 find_package(Qt5 REQUIRED COMPONENTS Core Gui Widgets)
 find_package(sensor_msgs REQUIRED)
-find_package(cv_bridge REQUIRED)
-find_package(OpenCV REQUIRED)
+# find_package(cv_bridge REQUIRED)
+# find_package(OpenCV REQUIRED)
 
 find_package(rclcpp_components REQUIRED)
 find_package(livox_interfaces_ext REQUIRED)
@@ -56,31 +56,31 @@ ament_target_dependencies(${PROJECT_NAME}
   rviz_common
   pluginlib
   sensor_msgs
-  cv_bridge
+  # cv_bridge
 )
 
 # ------------------------------------------------------------------------------
 # 2. UVC Camera Driver Executable Target
 # ------------------------------------------------------------------------------
-add_executable(uvc_camera_driver_node
-  src/uvc_camera_driver/uvc_camera_driver_node.cpp
-)
+# add_executable(uvc_camera_driver_node
+#   src/uvc_camera_driver/uvc_camera_driver_node.cpp
+# )
 
-target_include_directories(uvc_camera_driver_node PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  ${OpenCV_INCLUDE_DIRS}
-)
+# target_include_directories(uvc_camera_driver_node PUBLIC
+#   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+#   ${OpenCV_INCLUDE_DIRS}
+# )
 
 # Plain signature (no PRIVATE keyword) to remain compatible with ament_target_dependencies
-target_link_libraries(uvc_camera_driver_node
-  ${OpenCV_LIBRARIES}
-)
+# target_link_libraries(uvc_camera_driver_node
+#   ${OpenCV_LIBRARIES}
+# )
 
-ament_target_dependencies(uvc_camera_driver_node
-  rclcpp
-  sensor_msgs
-  cv_bridge
-)
+# ament_target_dependencies(uvc_camera_driver_node
+#   rclcpp
+#   sensor_msgs
+#   cv_bridge
+# )
 
 #
 # My thing
@@ -125,9 +125,9 @@ install(TARGETS ${PROJECT_NAME}
 )
 
 # Install executable (must go into lib/${PROJECT_NAME} for ROS 2)
-install(TARGETS uvc_camera_driver_node
-  DESTINATION lib/${PROJECT_NAME}
-)
+# install(TARGETS uvc_camera_driver_node
+#   DESTINATION lib/${PROJECT_NAME}
+# )
 
 install(TARGETS livox_interface_convert
   DESTINATION lib/${PROJECT_NAME}
@@ -138,9 +138,9 @@ install(DIRECTORY launch
   DESTINATION share/${PROJECT_NAME}/
 )
 
-install(DIRECTORY usb_cam
-  DESTINATION share/${PROJECT_NAME}/
-)
+# install(DIRECTORY usb_cam
+#   DESTINATION share/${PROJECT_NAME}/
+# )
 
 install(DIRECTORY livox_ros2_driver_ext
   DESTINATION share/${PROJECT_NAME}/
@@ -162,7 +162,7 @@ endif()
 # ------------------------------------------------------------------------------
 # Package Export
 # ------------------------------------------------------------------------------
-ament_export_dependencies(rclcpp rviz_common pluginlib sensor_msgs cv_bridge rclcpp_components)
+ament_export_dependencies(rclcpp rviz_common pluginlib sensor_msgs rclcpp_components)
 ament_export_include_directories(include)
 ament_export_libraries(${PROJECT_NAME})
 
