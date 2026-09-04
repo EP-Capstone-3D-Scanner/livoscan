@@ -145,6 +145,11 @@ install(DIRECTORY launch
 install(DIRECTORY livox_ros2_driver_ext
   DESTINATION share/${PROJECT_NAME}/
 )
+
+install(DIRECTORY zed_ros2_wrapper
+  DESTINATION share/${PROJECT_NAME}/
+)
+
 install(DIRECTORY include/
   DESTINATION include
 )
