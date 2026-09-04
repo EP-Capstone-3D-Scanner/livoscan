@@ -93,6 +93,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     \
     && rm -rf /var/lib/apt/lists/*
 
+# Purge apt-get packages that conflict with Jetpack packages
+RUN apt-get purge -y \
+    ros-${ROS_DISTRO}-cv-bridge \
+    \
+    && apt-get autoremove -y \
+    && rm -rf /var/lib/apt/lists/*
+
 RUN echo "source /opt/ros/${ROS_DISTRO}/setup.bash" >> ~/.bashrc
 RUN echo "source /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash" >> ~/.bashrc
 ENV RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
