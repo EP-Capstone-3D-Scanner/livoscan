@@ -90,6 +90,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ros-${ROS_DISTRO}-rqt* \
     # For visualization using Foxglove
     ros-${ROS_DISTRO}-foxglove-bridge \
+    # For synchronising the livox lidar
+    linuxptp \
+    ethtool \
     \
     && rm -rf /var/lib/apt/lists/*
 
