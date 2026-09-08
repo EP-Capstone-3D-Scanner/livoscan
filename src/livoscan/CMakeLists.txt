@@ -150,6 +150,10 @@ install(DIRECTORY zed_ros2_wrapper
   DESTINATION share/${PROJECT_NAME}/
 )
 
+install(DIRECTORY fast_livo
+  DESTINATION share/${PROJECT_NAME}/
+)
+
 install(DIRECTORY include/
   DESTINATION include
 )
