@@ -21,7 +21,7 @@ def generate_launch_description():
         ),
         launch_arguments={
             'camera_model': 'zed2i',  # Change to your model: 'zed', 'zed2', 'zed2i', 'zedx', 'zedxm'
-            'config_path': custom_config_path
+            'ros_params_override_path': custom_config_path
         }.items()
     )
 

@@ -11,6 +11,7 @@
             grab_frame_rate: 30 # ZED SDK internal grabbing rate
 
         video:
+            publish_left_right: true # Advertise the left and right image topics that are published only if a node subscribes to them
             brightness: 4 # [DYNAMIC] Image brightness. Range: 0-8
             contrast: 4 # [DYNAMIC] Image contrast. Range: 0-8
             hue: 0 # [DYNAMIC] Image hue. Range: 0 to 11

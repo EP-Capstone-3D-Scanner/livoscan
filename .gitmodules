@@ -20,3 +20,7 @@
 	path = src/vision_opencv
 	url = https://github.com/ros-perception/vision_opencv.git
 	branch = humble
+[submodule "image_transport_plugins"]
+	path = src/image_transport_plugins
+	url = https://github.com/ros-perception/image_transport_plugins.git
+	branch = humble
